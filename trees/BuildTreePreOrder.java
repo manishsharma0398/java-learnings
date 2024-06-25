@@ -14,6 +14,16 @@ public class BuildTreePreOrder {
         }
     }
 
+    static class TreeInfo {
+        int height;
+        int diameter;
+
+        TreeInfo(int height, int diameter) {
+            this.height = height;
+            this.diameter = diameter;
+        }
+    }
+
     public static class BinaryTree {
         static int index = -1;
 
@@ -131,6 +141,39 @@ public class BuildTreePreOrder {
 
             return nodeHeight;
         }
+
+        public int diameterOfTree(Node root) { // time - O(n^2)
+            if (root == null) {
+                return 0;
+            }
+
+            int leftSubTreeDiameter = diameterOfTree(root.left);
+            int rightSubTreeDiameter = diameterOfTree(root.right);
+            int diameter = heightOfTree(root.left) + heightOfTree(root.right) + 1;
+
+            return Math.max(diameter, Math.max(leftSubTreeDiameter, rightSubTreeDiameter));
+        }
+
+        public TreeInfo diameterOfTree2(Node root) { // time - O(n)
+            if (root == null) {
+                return new TreeInfo(0, 0);
+            }
+
+            TreeInfo leftSubTree = diameterOfTree2(root.left);
+            TreeInfo rightSubTree = diameterOfTree2(root.right);
+
+            int myHeight = Math.max(leftSubTree.height, rightSubTree.height) + 1;
+
+            int diameterLeft = leftSubTree.diameter;
+            int diameterRight = rightSubTree.diameter;
+            int totalDiameter = leftSubTree.height + rightSubTree.height + 1;
+
+            int diameter = Math.max(Math.max(diameterRight, diameterLeft), totalDiameter);
+
+            TreeInfo myInfo = new TreeInfo(myHeight, diameter);
+            return myInfo;
+        }
+
     }
 
     public static void main(String[] args) {
@@ -149,5 +192,7 @@ public class BuildTreePreOrder {
         System.out.println("\nnodeCount: " + tree.nodeCount(root));
         System.out.println("sumOfNodes: " + tree.sumOfNodes(root));
         System.out.println("heightOfTree: " + tree.heightOfTree(root));
+        System.out.println("diameterOfTree: " + tree.diameterOfTree(root));
+        System.out.println("diameterOfTree2: " + tree.diameterOfTree2(root).diameter);
     }
 }
